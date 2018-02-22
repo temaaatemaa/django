@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>jQuery UI Autocomplete - Default functionality</title>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    var availableTags = [
+	  {% for system in allSystems %}
+	  "{{ system.name }}",
+	  {% endfor %}
+	  ""
+    ];
+    $( "#systems" ).autocomplete({
+      source: availableTags
+    });
+  } );
+  
+  </script>
+  <script>
+  function clear_all(){
+	  {% for prior in allPriority %}
+	  
+	  document.getElementById("prior{{prior.name}}").checked = false;
+	  {% for time in allTime %}
+	  document.getElementById("{{prior.name}}time{{time.description}}").checked = false;
+	  {% endfor %}
+
+	  {% endfor %}
+	  
+	  
+  }
+  function button_click_go() {
+	clear_all();
+    name = document.getElementById("systems").value;
+    var arr = [
+        {% for item in fulltable %}
+			{ "fio": '{{ item.user.name }}', "system": '{{ item.system.name }}' , "priority": '{{ item.priotiry.name }}' , "time": '{{ item.time.description }}' }{% if not forloop.last %},{% endif %}
+		{% endfor %}
+		];
+    console.log(arr);
+    
+    for (var i = 0; i<arr.length ;i++){
+	    if (arr[i].system == name){
+		    prior = arr[i].priority;
+		    id = "prior"+prior;
+		    document.getElementById(id).checked = "true";
+		    
+		    time = arr[i].time;
+		    id = prior+"time"+time;
+		    document.getElementById(id).checked = "true";
+	    };
+    };
+	};
+	
+	function save() {
+		var a = {};
+		name = document.getElementById("systems").value;
+		console.log(["qwe","sad"]);
+		{% for prior in allPriority %}
+		prior{{priority_id}} = document.getElementById("prior{{prior.name}}").checked;
+
+			var arr = [];
+			{% for time in allTime %}
+			if (document.getElementById("{{prior.name}}time{{time.description}}").checked){
+				arr.push("{{time.description}}")
+			}
+			else
+			{
+				xmlhttp = new XMLHttpRequest();
+				xmlhttp.open("GET", 'http://'+location.host+'/del_row/{{user.fio}}/'+name+'/{{prior.name}}/{{time.description}}/' , false);
+				xmlhttp.send(null);
+			}
+			{% endfor %}
+			a["{{prior.name}}"]=arr;
+			console.log(arr);
+			
+
+		{% endfor %}
+
+		console.log(location.host)
+		for (i in a)
+			{
+				for (j in a[i]){
+				console.log(i)
+				console.log(a[i][j])
+				xmlhttp = new XMLHttpRequest();
+				xmlhttp.open("GET", 'http://'+location.host+'/add_row/{{user.fio}}/'+name+'/'+i+'/'+a[i][j]+'/' , false);
+				xmlhttp.send(null);
+			}
+  		};
+		
+		
+		
+		};
+		{% for prior in allPriority %}
+		function priority_box_changed_{{prior.name}}(){
+			if (document.getElementById("prior{{prior.name}}").checked){
+			}
+			else{
+				{% for time in allTime %}
+					document.getElementById("{{prior.name}}time{{time.description}}").checked = false
+
+	  			{% endfor %}
+			}
+		};
+		{% endfor %}
+		function go_back(){
+			xmlhttp = new XMLHttpRequest();
+			xmlhttp.open("GET", 'http://'+location.host+'/' , false);
+			xmlhttp.send(null);
+			    
+			location.href = location.host
+		}
+</script>
+</head>
+<body>
+ 
+<div class="ui-widget">
+	<h1> {{user.fio}} {{user.phone}} {{user.email}}</h1>
+	<h2>Systems</h2>
+	Now used systems:
+	{% for system in userSystems %}
+	  {{ system.name }}
+	  {% endfor %}
+	  
+	  <h2>Edit System</h2>
+	 <div class="ui-widget">
+	  	<label for="systems">Systems: </label>
+	  	<input id="systems">
+	  	<button onclick="button_click_go()">Check</button>
+	  	
+	</div>
+	<h3>Prioriry</h3>
+		  <table width="100%">
+		  <tr>
+			  {% for prior in allPriority %}
+			  <td>
+				  <p>
+					  {{ prior.name }}
+					  <input type="checkbox" id="prior{{prior.name}}" onchange="priority_box_changed_{{prior.name}}()">
+				  </p>
+				    <h4>Time</h4>
+					{% for time in allTime %}
+					<p>
+						<input type="checkbox" id="{{prior.name}}time{{time.description}}">
+						<label for="{{prior.name}}time{{time.description}}">{{ time.description }}</label>
+	  				</p>
+	  				{% endfor %}
+			  </td>
+			  {% endfor %}
+		  </tr>
+	  </table>	 
+	  
+	  	<form>
+			<input type="button" value="Save" onClick="save()">
+		</form>
+	    <form>
+			<input type="button" value="Go back" onClick="location.href='http://'+location.host+'/'">
+		</form>
+	  
+
+</div>
+ 
+ 
+</body>
+</html>

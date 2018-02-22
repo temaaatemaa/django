@@ -33,13 +33,13 @@ class Time(models.Model):
 		return self.description
         
 class FullTable(models.Model):
-	user = models.ManyToManyField(Users)
-	system = models.ManyToManyField(Systems)
-	priotiry = models.ManyToManyField(Priority)
-	time = models.ManyToManyField(Time)
+	user = models.ForeignKey(Users, on_delete=models.CASCADE)
+	system = models.ForeignKey(Systems, on_delete=models.CASCADE)
+	priotiry = models.ForeignKey(Priority, on_delete=models.CASCADE)
+	time = models.ForeignKey(Time, on_delete=models.CASCADE)
 	
 	def __str__(self):
 		a = ""
-		for us in self.user.all():
-			a+=us.fio
-		return a
+		##for us in self.user.all():
+			##a+=us.fio
+		return self.user.fio+" "+self.system.name+" "+self.priotiry.name+" "+self.time.description
