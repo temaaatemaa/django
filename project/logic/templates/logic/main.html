@@ -27,6 +27,7 @@
     xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", 'setup_user/'+name+'/' , false);
     xmlhttp.send(null);
+    location.href = 'setup_user/'+name+'/';
 
 	}
 </script>
@@ -37,7 +38,9 @@
   <label for="names">Users: </label>
   <input id="names">
   <button onclick="button_click_go()">Go</button>
-
+	    <form>
+			<input type="button" value="Go" onClick="location.href='http://'+location.host+'/'">
+		</form>
 </div>
  
  
