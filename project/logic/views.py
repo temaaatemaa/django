@@ -7,7 +7,10 @@ from django.shortcuts import redirect
 
 def mainView(request):
 	users = Users.objects.all()
-	return render(request, 'logic/main.html', {'users': users})
+	allSystems = Systems.objects.all()
+	allPriority = Priority.objects.all()
+	allTime = Time.objects.all()
+	return render(request, 'logic/main.html', {'users': users,'allSystems':allSystems,'allPriority':allPriority,'allTime':allTime})
 	
 def setupUser(request,pk):
 	userMatch = Users.objects.get(fio=pk)
@@ -41,3 +44,8 @@ def delRow(request,fio,system,priority,time):
 	chooseTime = Time.objects.get(description = time)
 	a = FullTable.objects.filter(user=user,system = chooseSystem,priotiry = choosePrior,time = chooseTime).delete()
 	return redirect('setupUser',pk = fio)
+	
+#def addSituation(request)
+#	return H
+	#return render(request, 'logic/main.html', {'users': users})
+	

@@ -1,4 +1,5 @@
 <!doctype html>
+{% load staticfiles %}
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -7,6 +8,9 @@
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="{% static 'css/logic.css' %}">
   <script>
   $( function() {
     var availableTags = [
@@ -117,82 +121,139 @@
 			    
 			location.href = location.host
 		}
+		
+		{%for prior in allPriority%}
+		{% for time in allTime %}
+		function time_box_changed_{{prior.name}}{{time.description}}()
+		{
+			if (document.getElementById("{{prior.name}}time{{time.description}}").checked){
+								{% for lasttime in allTime %}
+					{%if lasttime != time %}
+						document.getElementById("{{prior.name}}time{{lasttime.description}}").checked = false
+					{%endif%}
+	  			{% endfor %}
+	  			document.getElementById("prior{{prior.name}}").checked = true
+			}
+			else{
+				{% for lasttime in allTime %}
+					{%if lasttime != time %}
+						document.getElementById("{{prior.name}}time{{lasttime.description}}").checked = true
+					{%endif%}
+	  			{% endfor %}
+			}
+		}
+		{% endfor %}
+		{%endfor%}
 </script>
 </head>
 <body>
  
 <div class="ui-widget">
-	<h1> {{user.fio}} {{user.phone}} {{user.email}}</h1>
-	<h2>Systems</h2>
-	Now used systems:
-	{% for system in userSystems %}
-	  {{ system.name }}
-	  {% endfor %}
-	  
-	  <table>
-	  {%if fulltable%}
-	  <thead>
-	  <tr>
-	 	 <th>System</th>
-	 	 <th>Priority</th>
-	 	 <th>Time</th>
-	  </tr>
-  	</thead>
-	  {%endif%}
-	  
-	  {%for row in fulltable%}
-	  
-		  <tr>
-			  <td>
-		  	{{row.system.name}} 
-		  	</td>
-		  	<td>
-			  	{{row.priotiry.name}} 
-			</td>
-			<td>
-				{{row.time.description}}
-			</td>
-		  <tr>
-	
-	  {%endfor%}
-	  <table>
-	  
-	  <h2>Edit System</h2>
-	 <div class="ui-widget">
-	  	<label for="systems">Systems: </label>
-	  	<input id="systems">
-	  	<button onclick="button_click_go()">Check</button>
-	  	
+	<h1>
+		<a>ФИО: {{user.fio}}</a>
+	</h1> 
+	<div class="information">
+		<p>Тел: {{user.phone}}</p> 
+		<p>Еmeil: {{user.email}}</p> 
+		Должность: {{user.position}}
 	</div>
-	<h3>Prioriry</h3>
-		  <table width="100%">
-		  <tr>
-			  {% for prior in allPriority %}
-			  <td>
-				  <p>
-					  {{ prior.name }}
-					  <input type="checkbox" id="prior{{prior.name}}" onchange="priority_box_changed_{{prior.name}}()">
-				  </p>
-				    <h4>Time</h4>
-					{% for time in allTime %}
-					<p>
-						<input type="checkbox" id="{{prior.name}}time{{time.description}}">
-						<label for="{{prior.name}}time{{time.description}}">{{ time.description }}</label>
-	  				</p>
-	  				{% endfor %}
-			  </td>
-			  {% endfor %}
-		  </tr>
-	  </table>	 
+	
+	<h2>
+		<a>Системы</a>
+	</h2>
+	
+	<div class="usersystems">
+		<h4>
+			Системы на которые подписан {{user.fio}}:
+			{% for system in userSystems %}
+				{{ system.name }}
+			{% endfor %}
+		</h4>
+		<p>
+		</p>
+		<div class="table_systems">
+			<table class="table">
+				{%if fulltable%}
+					<thead>
+						<tr>
+							<th>Система</th>
+							<th>Приоритет</th>
+							<th>Время</th>
+	  					</tr>
+  					</thead>
+  				{%endif%}
 	  
-	  	<form>
-			<input type="button" value="Save" onClick="save()">
-		</form>
-	    <form>
-			<input type="button" value="Go back" onClick="location.href='http://'+location.host+'/'">
-		</form>
-	  
+  				{%for row in fulltable%}
+  					<tr>
+  						<td>
+  							{{row.system.name}} 
+		  				</td>
+		  				<td>
+		  					{{row.priotiry.name}} 
+						</td>
+						<td>
+							{{row.time.description}}
+						</td>
+					<tr>
+				{%endfor%}
+			<table>
+		</div>
+		
+		
+		<h2>
+			<a>
+				Редактирование систем пользователя
+			</a>
+		</h2>
+		
+		<div class="inputsystem">
+			<label for="systems">
+				Название системы: 
+			</label>
+			<input id="systems">
+			<button onclick="button_click_go()"  class="btn btn-primary">
+				Показать конфигурацию
+			</button>
+		</div>
 
+		<h3>
+			Конфигурации приоритетов
+		</h3>
+		
+		<table width="100%" class="form-check">
+			<tr>
+				{% for prior in allPriority %}
+					<td>
+						<h4>
+				  			Приоритет:
+				  		</h4>
+						<p>
+							<input type="checkbox" id="prior{{prior.name}}" onchange="priority_box_changed_{{prior.name}}()">
+							<label for="prior{{prior.name}}}">{{ prior.name }}</label>
+			  			</p>
+			  			 <h4>
+				  			Доступность:
+				  		</h4>
+				  		{% for time in allTime %}
+				  			<p>
+				  				<input type="checkbox" id="{{prior.name}}time{{time.description}}" onchange="time_box_changed_{{prior.name}}{{time.description}}()">
+				  				<label class:"labelTime" for="{{prior.name}}time{{time.description}}">{{ time.description }}</label>
+  							</p>
+  						{% endfor %}
+		  			</td>
+		  		{% endfor %}
+	  		</tr>
+  		</table>	 
+  
+  		<form>
+			<input type="button" value="Сохранить" onClick="save()"class="btn btn-primary">
+			<input type="button" value="Назад" class="btn btn-primary" onClick="location.href='http://'+location.host+'/'">
+		</form>
+			
+		<form>
+			
+		</form>
+	</div>
 </div>
  
  
