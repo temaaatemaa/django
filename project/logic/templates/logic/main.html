@@ -189,12 +189,17 @@
       }
     });
  
-    $( "#combobox" ).combobox();
+    $( "#names" ).combobox();
+    $( "#system" ).combobox();
+    $( "#prior" ).combobox();
+    $( "#time" ).combobox();
     $( "#toggle" ).on( "click", function() {
       $( "#combobox" ).toggle();
     });
   } );
+
   	
+  	  	
 	</script>
 	<script>
 		function button_click_go() 
@@ -205,7 +210,16 @@
 	
 		function button_add_incident()
 		{
-		
+			system = document.getElementById("system").value;
+			prior = document.getElementById("prior").value;
+			time = document.getElementById("time").value;
+			
+			var willCreate = confirm("Система: " + system +"\r\n"+"Приоритет: " + prior +"\r\n"+ "Доступность: "+ time)
+			if (willCreate)
+			{
+				location.href = 'add_situation/'+system+"/"+prior+"/"+time+'/';
+			}
+			
 		}
 	</script>
 </head>
@@ -216,9 +230,18 @@
 				Просмотр конфигураций пользователя:
 			</a>
 		</h2>
-		<label for="names">ФИО: </label>
-		<input id="names">
-		<button onclick="button_click_go()" class="btn btn-primary">Посмотреть и изменить</button>
+		<p>
+			<label>ФИО: </label>
+			<select id="names">
+				<option value="">Select one...</option>
+				{% for user in users %}
+					<option  value="{{user.fio}}">{{user.fio}}</option>
+				{% endfor %}
+			</select>
+		</p>
+		<p>
+			<button onclick="button_click_go()" class="btn btn-primary" >Посмотреть и изменить</button>
+		</p>
 	</div>
 	
 	<div class="incident">
@@ -229,18 +252,34 @@
 		</h2>
 		
 		<p>
-			<label for="system">Система: </label>
-			<input id="system">
+			<label>Система: </label>
+			<select id="system">
+				<option value="">Select one...</option>
+				{% for system in allSystems %}
+					<option  value="{{system.name}}">{{system.name}}</option>
+				{% endfor %}
+			</select>
 		</p>
 		<p>
-			<label for="prior"> Приоритет: </label>
-			<input id="prior">
+			<label>Приоритет: </label>
+			<select id="prior">
+				<option value="">Select one...</option>
+				{% for prior in allPriority %}
+					<option  value="{{prior.name}}">{{prior.name}}</option>
+				{% endfor %}
+			</select>
 		</p>
 		<p>
-			<label for="time"> Доступность: </label>
-			<input id="time">
+			<label>Доступность: </label>
+			<select id="time">
+				<option value="">Select one...</option>
+				{% for time in allTime %}
+					<option  value="{{time.description}}">{{time.description}}</option>
+				{% endfor %}
+			</select>
 		</p>
 		<p>
+			<label>Доступность #2 (НАДО ВЫБРАТЬ ИЛИ ВВЕРХНЯЯ ИЛИ ЭТА) ПОКА РАБОТАЕТ ТОК ВЕРХНЯЯ: </label>
 			<select class="form-control">
 				<option> 
 					Время
@@ -255,36 +294,6 @@
 		</p>
 	</div>
 	
-<div class="ui-widget">
-  <label>Your preferred programming language: </label>
-  <select id="combobox">
-    <option value="">Select one...</option>
-    <option value="ActionScript">ActionScript</option>
-    <option value="AppleScript">AppleScript</option>
-    <option value="Asp">Asp</option>
-    <option value="BASIC">BASIC</option>
-    <option value="C">C</option>
-    <option value="C++">C++</option>
-    <option value="Clojure">Clojure</option>
-    <option value="COBOL">COBOL</option>
-    <option value="ColdFusion">ColdFusion</option>
-    <option value="Erlang">Erlang</option>
-    <option value="Fortran">Fortran</option>
-    <option value="Groovy">Groovy</option>
-    <option value="Haskell">Haskell</option>
-    <option value="Java">Java</option>
-    <option value="JavaScript">JavaScript</option>
-    <option value="Lisp">Lisp</option>
-    <option value="Perl">Perl</option>
-    <option value="PHP">PHP</option>
-    <option value="Python">Python</option>
-    <option value="Ruby">Ruby</option>
-    <option value="Scala">Scala</option>
-    <option value="Scheme">Scheme</option>
-  </select>
-</div>
- 
- 
  
 </body>
 </html>

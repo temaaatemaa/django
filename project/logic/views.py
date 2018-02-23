@@ -45,7 +45,10 @@ def delRow(request,fio,system,priority,time):
 	a = FullTable.objects.filter(user=user,system = chooseSystem,priotiry = choosePrior,time = chooseTime).delete()
 	return redirect('setupUser',pk = fio)
 	
-#def addSituation(request)
-#	return H
-	#return render(request, 'logic/main.html', {'users': users})
+def addSituation(request,system,priority,time):
+	chooseSystem = Systems.objects.get(name = system)
+	choosePrior = Priority.objects.get(name = priority)
+	chooseTime = Time.objects.get(description = time)
+	a = FullTable.objects.filter(system = chooseSystem,priotiry = choosePrior,time = chooseTime)
+	return render(request, 'logic/add_situation.html', {'fulltable':a})
 	

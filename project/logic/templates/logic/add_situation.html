@@ -1,0 +1,33 @@
+<!doctype html>
+{% load staticfiles %}
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>jQuery UI Autocomplete - Default functionality</title>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="{% static 'css/logic.css' %}">
+
+	<script >
+		var arr = [
+		        {% for item in fulltable %}
+					{ "fio": '{{ item.user.name }}', "system": '{{ item.system.name }}' , "priority": '{{ item.priotiry.name }}' , "time": '{{ item.time.description }}' }{% if not forloop.last %},{% endif %}
+				{% endfor %}
+				];
+		    console.log(arr);
+	 </script>
+ 	</script>
+</head>
+<body>
+  {% for item in fulltable %}
+  <p>
+	{{ item.user.fio }} {{ item.system.name }} {{ item.priotiry.name }} {{ item.time.description }} {{item.user.email}} {{item.user.phone}}
+  </p>
+	{% endfor %}
+</body>
+</html>
