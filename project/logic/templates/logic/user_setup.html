@@ -85,16 +85,17 @@
 		console.log(location.host)
 		for (i in a)
 			{
-				for (j in a[i]){
+				for (j in a[i])
+				{
 				console.log(i)
 				console.log(a[i][j])
 				xmlhttp = new XMLHttpRequest();
 				xmlhttp.open("GET", 'http://'+location.host+'/add_row/{{user.fio}}/'+name+'/'+i+'/'+a[i][j]+'/' , false);
 				xmlhttp.send(null);
-			}
-  		};
+				}
+  			};
 		
-		
+		location.reload(true)
 		
 		};
 		{% for prior in allPriority %}
@@ -127,6 +128,34 @@
 	{% for system in userSystems %}
 	  {{ system.name }}
 	  {% endfor %}
+	  
+	  <table>
+	  {%if fulltable%}
+	  <thead>
+	  <tr>
+	 	 <th>System</th>
+	 	 <th>Priority</th>
+	 	 <th>Time</th>
+	  </tr>
+  	</thead>
+	  {%endif%}
+	  
+	  {%for row in fulltable%}
+	  
+		  <tr>
+			  <td>
+		  	{{row.system.name}} 
+		  	</td>
+		  	<td>
+			  	{{row.priotiry.name}} 
+			</td>
+			<td>
+				{{row.time.description}}
+			</td>
+		  <tr>
+	
+	  {%endfor%}
+	  <table>
 	  
 	  <h2>Edit System</h2>
 	 <div class="ui-widget">

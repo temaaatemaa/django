@@ -24,24 +24,24 @@
   <script>
   function button_click_go() {
     name = document.getElementById("names").value;
-    xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("GET", 'setup_user/'+name+'/' , false);
-    xmlhttp.send(null);
     location.href = 'setup_user/'+name+'/';
 
+	}
+	
+	function button_add_incident(){
+		
 	}
 </script>
 </head>
 <body>
  
 <div class="ui-widget">
-  <label for="names">Users: </label>
+  <label for="names">User: </label>
   <input id="names">
-  <button onclick="button_click_go()">Go</button>
-	    <form>
-			<input type="button" value="Go" onClick="location.href='http://'+location.host+'/'">
-		</form>
+  <button onclick="button_click_go()">See and edit</button>
 </div>
+
+ <button onclick="button_add_incident()">Add incident</button>
  
  
 </body>
