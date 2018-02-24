@@ -124,7 +124,7 @@
 		
 		{%for prior in allPriority%}
 		{% for time in allTime %}
-		function time_box_changed_{{prior.name}}{{time.description}}()
+		function time_box_changed_{{prior.priority_id}}{{time.time_id}}()
 		{
 			if (document.getElementById("{{prior.name}}time{{time.description}}").checked){
 								{% for lasttime in allTime %}
@@ -381,7 +381,7 @@
 				  		</h4>
 				  		{% for time in allTime %}
 				  			<p>
-				  				<input type="checkbox" id="{{prior.name}}time{{time.description}}" onchange="time_box_changed_{{prior.name}}{{time.description}}()">
+				  				<input type="checkbox" id="{{prior.name}}time{{time.description}}" onchange="time_box_changed_{{prior.priority_id}}{{time.time_id}}()">
 				  				<label class:"labelTime" for="{{prior.name}}time{{time.description}}">{{ time.description }}</label>
   							</p>
   						{% endfor %}
