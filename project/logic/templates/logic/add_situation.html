@@ -24,9 +24,14 @@
  	</script>
 </head>
 <body>
+	{%if fulltable%}
+		
+	{%else%}
+	НЕТ СООТВЕТСТВУЮЩИХ ПОЛЬЗОВАТЕЛЕЙ
+	{%endif%}
   {% for item in fulltable %}
   <p>
-	{{ item.user.fio }} {{ item.system.name }} {{ item.priotiry.name }} {{ item.time.description }} {{item.user.email}} {{item.user.phone}}
+	ФИО:{{ item.user.fio }}; система: {{ item.system.name }}; приоритет:{{ item.priotiry.name }}; доступность:{{ item.time.description }};    emeil:{{item.user.email}}; tel:{{item.user.phone}};
   </p>
 	{% endfor %}
 </body>
