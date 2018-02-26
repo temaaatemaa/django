@@ -80,7 +80,7 @@ def addSituation(request,system,priority,time):
 	msg['To'] = 'sms-server@sbt.ru'
 	
 	# open a file and save mail to it
-	with open('filename.msg', 'w') as out:
+	with open('filename.eml', 'w') as out:
 	    gen = email.generator.Generator(out)
 	    gen.flatten(msg)
 	    
