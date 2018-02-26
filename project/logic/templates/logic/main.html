@@ -212,7 +212,16 @@
 		{
 			system = document.getElementById("system").value;
 			prior = document.getElementById("prior").value;
-			time = document.getElementById("time").value;
+			
+			var now = new Date();
+			nowHours = now.getHours;
+			if ((nowHours<18)&&(nowHours)>8){
+				time = "Рабочее время";
+			}
+			else{
+				time = "Рабочее время";
+			}
+			
 			
 			var willCreate = confirm("Система: " + system +"\r\n"+"Приоритет: " + prior +"\r\n"+ "Доступность: "+ time)
 			if (willCreate)
@@ -224,25 +233,6 @@
 	</script>
 </head>
 <body>
-	<div class="checkuser">
-		<h2>
-			<a>
-				Просмотр конфигураций пользователя:
-			</a>
-		</h2>
-		<p>
-			<label>ФИО: </label>
-			<select id="names" class="fio">
-				<option value="">Select one...</option>
-				{% for user in users %}
-					<option  value="{{user.fio}}">{{user.fio}}</option>
-				{% endfor %}
-			</select>
-		</p>
-		<p>
-			<button onclick="button_click_go()" class="btn btn-primary" >Посмотреть и изменить</button>
-		</p>
-	</div>
 	
 	<div class="incident">
 		<h2>
@@ -269,31 +259,16 @@
 				{% endfor %}
 			</select>
 		</p>
-		<p>
-			<label>Доступность: </label>
-			<select id="time">
-				<option value="">Select one...</option>
-				{% for time in allTime %}
-					<option  value="{{time.description}}">{{time.description}}</option>
-				{% endfor %}
-			</select>
-		</p>
-		<p>
-			<label>Доступность #2 (НАДО ВЫБРАТЬ ИЛИ ВВЕРХНЯЯ ИЛИ ЭТА) ПОКА РАБОТАЕТ ТОК ВЕРХНЯЯ: </label>
-			<select class="form-control">
-				<option> 
-					Время
-				</option>
-				{% for time in allTime %}
-						<option>{{time}}</option>
-						{% endfor %}
-			</select>
-		</p>
+
 		<p>
 			<button onclick="button_add_incident()" class="btn btn-primary">Создать инцидент</button>
 		</p>
 	</div>
-	
+		<div class="checkuser">
+		<p>
+			<h4><a href="setup_user/">Изменение и просмотр конфигураций пользователей</a></h4>
+		</p>
+	</div>
  
 </body>
 </html>

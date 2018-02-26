@@ -212,7 +212,6 @@
           })
           .on( "click", function() {
             input.trigger( "focus" );
- 
             // Close if already visible
             if ( wasOpen ) {
               return;
@@ -278,19 +277,55 @@
     });
  
     $( "#systems" ).combobox();
+    $( "#names" ).combobox();
     $( "#toggle" ).on( "click", function() {
       $( "#combobox" ).toggle();
     });
   } );
+  
+  $(function(){
+   $("#names").change(function () {
+        var end = this.value;
+        alert(end)
+    });
+      $(".fio").change(function(){
+	 name = document.getElementById("names").value;
+	location.href = '../../setup_user/'+name+'/';
+  })
+  });
+
+  
+  function choose_new_fio(){
+	name = document.getElementById("names").value;
+	location.href = '../../setup_user/'+name+'/';
+  }
 </script>
 </head>
 <body>
  
 <div class="ui-widget">
 	<h1>
-		<a>ФИО: {{user.fio}}</a>
+		<a>
+
+		Пользователь:
+		</a>
 	</h1> 
+	<p>
+				
+		<select onchange="choose_new_fio()" id="names" class="fio">
+			<option  value="{{user.fio}}">{{user.fio}}</option>
+			{% for us in users %}
+				{%if us.fio != user.fio%}
+				<option  value="{{us.fio}}">{{us.fio}}</option>
+				{%endif%}
+				{% endfor %}
+		</select>
+			</p>
+					<p>
+			<button onclick="choose_new_fio()" class="btn btn-primary" >Выбрать</button>
+		</p>
 	<div class="information">
+		<p>ФИО: {{user.fio}}</p>
 		<p>Тел: {{user.phone}}</p> 
 		<p>Еmeil: {{user.email}}</p> 
 		Должность: {{user.position}}
@@ -301,12 +336,6 @@
 	</h2>
 	
 	<div class="usersystems">
-		<h4>
-			Системы на которые подписан {{user.fio}}:
-			{% for system in userSystems %}
-				{{ system.name }}
-			{% endfor %}
-		</h4>
 		<p>
 		</p>
 		<div class="table_systems">
