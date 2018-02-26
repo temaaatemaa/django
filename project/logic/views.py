@@ -71,7 +71,7 @@ def addSituation(request,system,priority,time):
 	if (time == "Круглосуточно"):
 		a = FullTable.objects.filter(system = chooseSystem,priotiry = choosePrior,time = chooseTime)
 	
-	stringTel = '['
+	stringTel = ''
 	for us in a:
 		stringTel = stringTel+us.user.phone+' '
 	msg = email.mime.text.MIMEText(stringTel)
