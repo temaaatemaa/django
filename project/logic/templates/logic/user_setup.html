@@ -184,6 +184,15 @@
             this._trigger( "select", event, {
               item: ui.item.option
             });
+            if(this.bindings[0].id == "names")
+            {
+	            choose_new_fio();
+            }
+            if(this.bindings[0].id == "systems")
+            {
+	            button_click_go()
+            }
+
           },
  
           autocompletechange: "_removeIfInvalid"
@@ -299,6 +308,10 @@
 	name = document.getElementById("names").value;
 	location.href = '../../setup_user/'+name+'/';
   }
+  
+  $("#names").change(function () {
+      console.log( $(this).val() );
+    });
 </script>
 </head>
 <body>
@@ -316,12 +329,14 @@
 			<option  value="{{user.fio}}">{{user.fio}}</option>
 			{% for us in users %}
 				{%if us.fio != user.fio%}
-				<option  value="{{us.fio}}">{{us.fio}}</option>
+				<option onclick="choose_new_fio()"  value="{{us.fio}}">{{us.fio}}</option>
 				{%endif%}
 				{% endfor %}
 		</select>
 			</p>
-					<p>
+			<p>
+		
+		
 			<button onclick="choose_new_fio()" class="btn btn-primary" >Выбрать</button>
 		</p>
 	<div class="information">
