@@ -65,13 +65,14 @@ def updateUserAdd(request,fio,system):
 	user = Users.objects.get(fio = fio)
 	chooseSystem = Systems.objects.get(name = system)
 	allPriority = Priority.objects.all()
-	
 	for prior in allPriority:
 		choosePrior = Priority.objects.get(name = prior.name)
-		chooseTime = Time.objects.get(description = request.GET.get("{0}[]".format(prior.name)))
-		a = FullTable.objects.filter(user=user,system = chooseSystem,priotiry = choosePrior,time = chooseTime).first()
-		if not a:
-			FullTable.objects.create(user=user,system = chooseSystem,priotiry = choosePrior,time = chooseTime)
+		time = request.GET.get("{0}[]".format(prior.name));
+		if time:
+			chooseTime = Time.objects.get(description = time)
+			a = FullTable.objects.filter(user=user,system = chooseSystem,priotiry = choosePrior,time = chooseTime).first()
+			if not a:
+				FullTable.objects.create(user=user,system = chooseSystem,priotiry = choosePrior,time = chooseTime)
 	return JsonResponse({"ok": "ok"})
 	
 def updateUserDel(request,fio,system):
@@ -79,11 +80,20 @@ def updateUserDel(request,fio,system):
 	chooseSystem = Systems.objects.get(name = system)
 	allPriority = Priority.objects.all()
 	
+	full = request.GET.lists()
+	a = {}
 	for prior in allPriority:
 		choosePrior = Priority.objects.get(name = prior.name)
-		chooseTime = Time.objects.get(description = request.GET.get("{0}[]".format(prior.name)))
-		a = FullTable.objects.filter(user=user,system = chooseSystem,priotiry = choosePrior,time = chooseTime).delete()
-	return JsonResponse({"ok": "ok"})
+		tiime = request.GET.getlist("{0}[]".format(prior.name))
+		if len(tiime) == 1:
+			chooseTime = Time.objects.get(description = tiime[0])
+			a = FullTable.objects.filter(user=user,system = chooseSystem,priotiry = choosePrior,time = chooseTime).delete()
+		if len(tiime) > 1:
+			for time2 in tiime:
+				chooseTime = Time.objects.get(description = time2)
+				a = FullTable.objects.filter(user=user,system = chooseSystem,priotiry = choosePrior,time = chooseTime).delete()
+			
+	return JsonResponse({"ok": ""})
 
 def addRow(request,fio,system,priority,time):
 	user = Users.objects.get(fio = fio)

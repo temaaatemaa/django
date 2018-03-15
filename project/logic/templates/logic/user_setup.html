@@ -393,7 +393,8 @@
 		{% endfor %}
 		
 		var data123 = {"add" : dictOfUsedPrior, "del":dictOfUnusedPrior};
-		
+		console.log("unused")
+		console.log(dictOfUnusedPrior)
 		
 		$.ajax({
         url: '/ajax/update_user/add/{{user.fio}}/'+name+'/',
@@ -424,6 +425,7 @@ $.ajax({
 		var oldtable = document.getElementById("mymaketable")
 		if (oldtable)
 		{
+					myTableDiv.removeChild(oldtable);
 				    oldtable.innerHTML = "";
 
 		}
@@ -506,7 +508,6 @@ function load_page(){
 		</select>
 			</p>
 			<p>
-			<button onclick="choose_new_fio()" class="btn btn-primary" >Выбрать</button>
 		</p>
 	<div class="information">
 		<p>ФИО: {{user.fio}}</p>
@@ -543,9 +544,6 @@ function load_page(){
 			</select>
 			</p>
 			<p>
-				<button onclick="new_button_click_go()"  class="btn btn-primary">
-					Показать конфигурацию
-				</button>
 			</p>
 		</div>
 
