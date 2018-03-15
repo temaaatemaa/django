@@ -61,24 +61,65 @@
     };
 	};
 	
+	function new_button_click_go() {
+	clear_all();
+	
+	name = document.getElementById("systems").value;
+	
+	$.ajax({
+        url: '/ajax/update_user/get_full_table/',
+        data: {'user' : "{{user.fio}}"},
+        dataType: 'json',
+        success: function (data) {
+          console.log(data)
+          
+		for (dict in data){
+			console.log(data[dict])
+			if (data[dict].system == name){
+				prior = data[dict].priority;
+				id = "prior"+prior;
+				document.getElementById(id).checked = "true";
+		    
+				time = data[dict].time;
+				id = prior+"time"+time;
+				document.getElementById(id).checked = "true";
+	    	};
+    	};
+
+        }
+      });
+
+	
+    
+    var arr = [
+        {% for item in fulltable %}
+			{ "fio": '{{ item.user.name }}', "system": '{{ item.system.name }}' , "priority": '{{ item.priotiry.name }}' , "time": '{{ item.time.description }}' }{% if not forloop.last %},{% endif %}
+		{% endfor %}
+		];
+    //console.log(arr);
+    
+   	};
+
+	
 	function save() {
 		var a = {};
 		name = document.getElementById("systems").value;
 		console.log(["qwe","sad"]);
 		{% for prior in allPriority %}
-		prior{{priority_id}} = document.getElementById("prior{{prior.name}}").checked;
+			prior{{priority_id}} = document.getElementById("prior{{prior.name}}").checked;
 
 			var arr = [];
 			{% for time in allTime %}
-			if (document.getElementById("{{prior.name}}time{{time.description}}").checked){
-				arr.push("{{time.description}}")
-			}
-			else
-			{
-				xmlhttp = new XMLHttpRequest();
-				xmlhttp.open("GET", 'http://'+location.host+'/del_row/{{user.fio}}/'+name+'/{{prior.name}}/{{time.description}}/' , false);
-				xmlhttp.send(null);
-			}
+				if (document.getElementById("{{prior.name}}time{{time.description}}").checked)
+				{
+					arr.push("{{time.description}}")
+				}
+				else
+				{
+					xmlhttp = new XMLHttpRequest();
+					xmlhttp.open("GET", 'http://'+location.host+'/del_row/{{user.fio}}/'+name+'/{{prior.name}}/{{time.description}}/' , false);
+					xmlhttp.send(null);
+				}
 			{% endfor %}
 			a["{{prior.name}}"]=arr;
 			console.log(arr);
@@ -114,6 +155,9 @@
 			}
 		};
 		{% endfor %}
+		
+		
+		
 		function go_back(){
 			xmlhttp = new XMLHttpRequest();
 			xmlhttp.open("GET", 'http://'+location.host+'/' , false);
@@ -190,7 +234,7 @@
             }
             if(this.bindings[0].id == "systems")
             {
-	            button_click_go()
+	            new_button_click_go()
             }
 
           },
@@ -312,9 +356,136 @@
   $("#names").change(function () {
       console.log( $(this).val() );
     });
+    
+    function new_save() {
+	        
+	        
+	        
+		var dictOfUsedPrior = {};
+		var dictOfUnusedPrior = {};
+		name = document.getElementById("systems").value;
+		console.log(["qwe","sad"]);
+		
+		{% for prior in allPriority %}
+			prior{{priority_id}} = document.getElementById("prior{{prior.name}}").checked;
+
+			var arrayOfCheckedTime = [];
+			var arrayOfUNCheckedTime = [];
+			
+			{% for time in allTime %}
+				if (document.getElementById("{{prior.name}}time{{time.description}}").checked)
+				{
+					arrayOfCheckedTime.push("{{time.description}}")
+				}
+				else
+				{
+					//xmlhttp.open("GET", 'http://'+location.host+'/del_row/{{user.fio}}/'+name+'/{{prior.name}}/{{time.description}}/' , false);
+					arrayOfUNCheckedTime.push("{{time.description}}")
+				}
+			{% endfor %}
+			
+			dictOfUsedPrior["{{prior.name}}"]=arrayOfCheckedTime;
+			dictOfUnusedPrior["{{prior.name}}"]=arrayOfUNCheckedTime;
+			
+			
+			
+
+		{% endfor %}
+		
+		var data123 = {"add" : dictOfUsedPrior, "del":dictOfUnusedPrior};
+		
+		
+		$.ajax({
+        url: '/ajax/update_user/add/{{user.fio}}/'+name+'/',
+        data: dictOfUsedPrior,
+        dataType: 'json',
+        success: function (data) {
+          console.log(data)
+$.ajax({
+        url: '/ajax/update_user/del/{{user.fio}}/'+name+'/',
+        data: dictOfUnusedPrior,
+        dataType: 'json',
+        success: function (data) {
+          console.log(data)
+          addTable()
+        }
+      });
+        }
+      });
+      
+
+	}
+	
+	
+	function addTable() {
+    var myTableDiv = document.getElementById("myTable");
+    
+    
+		var oldtable = document.getElementById("mymaketable")
+		if (oldtable)
+		{
+				    oldtable.innerHTML = "";
+
+		}
+
+
+
+    var table = document.createElement('TABLE');
+    //table.border = '1';
+	table.setAttribute('class', 'table');
+	table.setAttribute('id', 'mymaketable');
+	var tableBody = document.createElement('THEAD');
+	
+    table.appendChild(tableBody);
+
+	
+        var tr = document.createElement('TR');
+        tableBody.appendChild(tr);
+        tr.setAttribute('style', 'font-weight: bold;')
+		
+		a = ["Cистема","Приоритет","Время"]
+		
+        for (var j = 0; j < 3; j++) {
+            var td = document.createElement('TD');
+            td.appendChild(document.createTextNode(a[j]));
+            tr.appendChild(td);
+        }
+
+
+		$.ajax({
+        url: '/ajax/update_user/get_full_table/',
+        data: {'user' : "{{user.fio}}"},
+        dataType: 'json',
+        success: function (data) {
+          console.log(data)
+          
+          var tableBody = document.createElement('TBODY');
+		  table.appendChild(tableBody);
+		for (dict in data){
+			var tr = document.createElement('TR');
+			tableBody.appendChild(tr);
+			a = [data[dict].system,data[dict].priority,data[dict].time]
+			for (var j = 0; j < 3; j++) {
+            	var td = document.createElement('TD');
+				td.appendChild(document.createTextNode(a[j]));
+				tr.appendChild(td);
+        }
+		myTableDiv.appendChild(table);
+    	};
+
+        }
+      });
+
+	
+    
+}
+function load_page(){
+	addTable()
+	//document.getElementById("newtable").classList.add('table');
+}
 </script>
 </head>
-<body>
+<body onload="load_page()">
  
 <div class="ui-widget">
 	<h1>
@@ -325,7 +496,7 @@
 	</h1> 
 	<p>
 				
-		<select onchange="choose_new_fio()" id="names" class="fio">
+		<select id="names" class="fio">
 			<option  value="{{user.fio}}">{{user.fio}}</option>
 			{% for us in users %}
 				{%if us.fio != user.fio%}
@@ -335,8 +506,6 @@
 		</select>
 			</p>
 			<p>
-		
-		
 			<button onclick="choose_new_fio()" class="btn btn-primary" >Выбрать</button>
 		</p>
 	<div class="information">
@@ -349,38 +518,13 @@
 	<h2>
 		<a>Системы</a>
 	</h2>
-	
-	<div class="usersystems">
-		<p>
-		</p>
-		<div class="table_systems">
-			<table class="table">
-				{%if fulltable%}
-					<thead>
-						<tr>
-							<th>Система</th>
-							<th>Приоритет</th>
-							<th>Время</th>
-	  					</tr>
-  					</thead>
-  				{%endif%}
-	  
-  				{%for row in fulltable%}
-  					<tr>
-  						<td>
-  							{{row.system.name}} 
-		  				</td>
-		  				<td>
-		  					{{row.priotiry.name}} 
-						</td>
-						<td>
-							{{row.time.description}}
-						</td>
-					<tr>
-				{%endfor%}
-			<table>
-		</div>
-		
+	<p>
+	</p>
+
+		<table id="myTable" width="50%"></table>
+
+	<p>
+	</p>		
 		
 		<h2>
 			<a>
@@ -399,7 +543,7 @@
 			</select>
 			</p>
 			<p>
-				<button onclick="button_click_go()"  class="btn btn-primary">
+				<button onclick="new_button_click_go()"  class="btn btn-primary">
 					Показать конфигурацию
 				</button>
 			</p>
@@ -435,7 +579,7 @@
   		</table>	 
   
   		<form>
-			<input type="button" value="Сохранить" onClick="save()"class="btn btn-primary">
+			<input type="button" value="Сохранить" onClick="new_save()"class="btn btn-primary">
 			<input type="button" value="Назад" class="btn btn-primary" onClick="location.href='http://'+location.host+'/'">
 		</form>
 			

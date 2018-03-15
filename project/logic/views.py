@@ -7,6 +7,8 @@ import email
 from django.conf import settings
 from django.http import HttpResponse
 import os
+from django.http import JsonResponse
+
 # Create your views here.
 
 def mainView(request):
@@ -42,6 +44,46 @@ def setupUserNull(request):
 	for rows in fulltable:
 		userSystems.add(rows.system)
 	return render(request, 'logic/user_setup.html', {'users':users,'user':userMatch ,'userSystems':userSystems,'allSystems':allSystems,'allPriority':allPriority,'allTime':allTime,'fulltable':fulltable})
+
+def updateUserGetFullTable(request):
+	userFio = request.GET.get("user")
+	user = Users.objects.get(fio = userFio)
+	fulltable = FullTable.objects.filter(user = user)
+	massiv = {}
+	i = 0
+	for item in fulltable:
+		mydict = {}
+		mydict["fio"] = item.user.fio
+		mydict["system"] = item.system.name
+		mydict["priority"] = item.priotiry.name
+		mydict["time"] = item.time.description
+		massiv["{0}".format(i)]=mydict
+		i=i+1
+	return JsonResponse(massiv)
+
+def updateUserAdd(request,fio,system):
+	user = Users.objects.get(fio = fio)
+	chooseSystem = Systems.objects.get(name = system)
+	allPriority = Priority.objects.all()
+	
+	for prior in allPriority:
+		choosePrior = Priority.objects.get(name = prior.name)
+		chooseTime = Time.objects.get(description = request.GET.get("{0}[]".format(prior.name)))
+		a = FullTable.objects.filter(user=user,system = chooseSystem,priotiry = choosePrior,time = chooseTime).first()
+		if not a:
+			FullTable.objects.create(user=user,system = chooseSystem,priotiry = choosePrior,time = chooseTime)
+	return JsonResponse({"ok": "ok"})
+	
+def updateUserDel(request,fio,system):
+	user = Users.objects.get(fio = fio)
+	chooseSystem = Systems.objects.get(name = system)
+	allPriority = Priority.objects.all()
+	
+	for prior in allPriority:
+		choosePrior = Priority.objects.get(name = prior.name)
+		chooseTime = Time.objects.get(description = request.GET.get("{0}[]".format(prior.name)))
+		a = FullTable.objects.filter(user=user,system = chooseSystem,priotiry = choosePrior,time = chooseTime).delete()
+	return JsonResponse({"ok": "ok"})
 
 def addRow(request,fio,system,priority,time):
 	user = Users.objects.get(fio = fio)
